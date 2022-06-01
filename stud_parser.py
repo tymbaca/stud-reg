@@ -70,7 +70,7 @@ def parse_to_db() -> None:
 
 
 def main():
-    start_database("data.sql")
+    start_database()
     students = init_students(filename="students.txt")
     for student in students:
         database.add_student(student)
