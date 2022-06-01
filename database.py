@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Any, NamedTuple, Optional
 from unicodedata import name
 
+from pprint import pprint
 from exceptions import DatabaseError
 
 DATABASE_FILENAME = "database.db"
@@ -149,7 +150,8 @@ def _init_database(sql_filename: str = SQL_FILENAME) -> None:
 
 def main():
     start_database()
-    get_all_students()
+    students = get_all_students()
+    pprint(get_all_students())
     add_student(tigran, ghost=True)
     pass
 
