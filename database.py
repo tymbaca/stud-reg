@@ -123,13 +123,6 @@ def _is_keytable_indatabase() -> bool:
     return result
 
 
-def _student_to_tuple(student: Student) -> tuple[tuple, tuple]:
-    """Из экземпляра Student возвращает кортеж из двух списков -> tuple(fields, values)"""
-    fields = student.keys()
-    values = student.values()
-    return fields, values
-
-
 def _get_sql_script(sql_filename: str = SQL_FILENAME) -> str:
     with open(sql_filename, "r") as sql_file:
         return sql_file.read()
