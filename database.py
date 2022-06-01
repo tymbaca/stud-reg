@@ -118,7 +118,7 @@ def _init_database(sql_filename: str = SQL_FILENAME) -> None:
         raise DatabaseError("Ошибка при инициализации базы данных.")
 
 
-if __name__ == "__main__":
+def main():
     start_database(SQL_FILENAME)
     # global jeytable init
     arman = Student(
@@ -128,5 +128,8 @@ if __name__ == "__main__":
         phone='89003471088', 
         email='metin-2014@mail.ru'
         )
-
     add_student(arman)
+
+
+if __name__ == "__main__":
+    main()
