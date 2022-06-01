@@ -66,9 +66,9 @@ def _student_to_tuple(student: Student) -> tuple[tuple, tuple]:
 def add_student(student: Student, jentle=True) -> None:
     """Добавляет студента в базу данных."""
 
-    if not is_indatabase(get_sql_keytable(), student.name):
-    else:
-        print(f"[|] Студент {student.name} уже состоит в базе данных.")
+    if is_indatabase(get_sql_keytable(), student.name):
+        raise DatabaseError("[ERROR] Student is already in database")
+    
     fields = _student_to_tuple(student)[0]
     values = _student_to_tuple(student)[1]
     
