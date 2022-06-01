@@ -52,7 +52,7 @@ def start_database(sql_filename: str = SQL_FILENAME) -> None:
 def add_student(student: Student, jentle=True) -> None:
     """Добавляет студента в базу данных."""
 
-    if is_indatabase(_get_sql_keytable(), student.name):
+    if is_indatabase(KEYTABLE, student.name):
          print(f"Студент {student.name} уже в базе данных")
          return None
     
@@ -93,10 +93,7 @@ def is_indatabase(table: str, value, key="name", strict=False) -> bool:
 
 def _is_keytable_indatabase() -> bool:
     """Проверяет есть ли целевая таблица в базе данных."""
-    sql_keytable = _get_sql_keytable(SQL_FILENAME)
-    
-    result = is_indatabase('sqlite_master', sql_keytable)
-
+    result = is_indatabase('sqlite_master', KEYTABLE)
     return result
 
 
@@ -105,19 +102,6 @@ def _student_to_tuple(student: Student) -> tuple[tuple, tuple]:
     fields = student.keys()
     values = student.values()
     return fields, values
-
-
-def _get_sql_keytable(sql_filename: str = SQL_FILENAME) -> str | None:
-    """Получает имя первой таблицы в целевом SQL файле."""
-    try:
-        with open(sql_filename, "r") as file:
-            first_line = file.readline()
-        sql_keytable = first_line.split()[2] 
-        return sql_keytable
-    except FileNotFoundError:
-        raise DatabaseError("Заданный SQL файл отсутствует в директории.")
-    except:
-        raise DatabaseError("Похоже, что-то не так с первой строкой SQL файла.\nВозвращаю None.")
 
 
 def _get_sql_script(sql_filename: str = SQL_FILENAME) -> str:
