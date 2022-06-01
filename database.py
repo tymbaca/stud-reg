@@ -19,12 +19,12 @@ cursor = conn.cursor()
 
 @dataclass
 class Student:
-    id: int | None
     name: str
     birthdate: str
-    adress: str
+    address: str
     phone: str
     email: str
+    id: int = None
 
     def keys(self):
         dataclass_dict = dataclasses.asdict(self)
@@ -52,13 +52,24 @@ def start_database(sql_filename: str = SQL_FILENAME) -> None:
 
 def get_all_students() -> list[Student]:
     cursor.execute(f"SELECT * FROM {KEYTABLE}")
-    raw_students = cursor.fetchall()
+    student_rows = cursor.fetchall()
     students = list()
-    for raw_student in raw_students:
-        student = Student(
-            name = raw_student[name]
-        )
-    pass
+    for student_row in student_rows:
+        student = _row_to_student(student_row)
+        students.append(student)
+    return students
+
+
+def _row_to_student(student_row: sq.Row) -> Student:
+    student = Student(
+        id = student_row["id"],
+        name = student_row ["name"],
+        birthdate = student_row["birthdate"],
+        address = student_row["address"],
+        phone = student_row["phone"],
+        email = student_row["email"],
+    )
+    return student
 
 
 def add_student(student: Student, jentle=True) -> None:
@@ -136,7 +147,7 @@ def _init_database(sql_filename: str = SQL_FILENAME) -> None:
 
 
 def main():
-
+    start_database()
     get_all_students()
     pass
 
