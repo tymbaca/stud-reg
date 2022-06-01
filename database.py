@@ -19,7 +19,7 @@ cursor = conn.cursor()
 
 @dataclass
 class Student:
-    id: int
+    id: int | None
     name: str
     birthdate: str
     adress: str
