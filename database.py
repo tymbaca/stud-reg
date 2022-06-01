@@ -41,7 +41,7 @@ class Student:
 def start_database(sql_filename: str = SQL_FILENAME) -> None:
     """Инициализирует базу данных по заданному SQL файлу, если она ранее не была инициализирована."""
     global SQL_FILENAME
-    SQL_FILENAME = sql_filename
+    SQL_FILENAME = sql_filename # some wierd stuff
     if not _is_keytable_indatabase():
         _init_database(sql_filename)
         print("*Вы инициализировали базу данных*")
@@ -62,7 +62,7 @@ def add_student(student: Student, jentle=True) -> None:
     fields = fields[:-1] # deleting id field
     values = values[:-1]
     try:
-        cursor.execute(f"INSERT INTO students {fields} VALUES {values};") 
+        cursor.execute(f"INSERT INTO {KEYTABLE} {fields} VALUES {values};") 
         print(f'[+] Студент {student.name} внесен в базу данных.')
     except:
         raise DatabaseError
@@ -72,7 +72,7 @@ def add_student(student: Student, jentle=True) -> None:
 
 def change_student_value(student: Student, key, value): # value_type: ValueType
     """Изменяет выбранное значение у студента."""
-    cursor.execute("")
+    cursor.execute(f"UPDATE ")
 
     conn.commit()
 
