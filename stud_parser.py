@@ -44,7 +44,7 @@ def _bake_students(raw_students: list[list]) -> list[Student]:
             students.append(Student(
                 name = student[0],
                 birthdate = student[1],
-                adress = student[2],
+                address = student[2],
                 phone = student[3],
                 email = student[4],
                 ))
