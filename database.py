@@ -37,32 +37,6 @@ class Student:
     # _value = tuple([value for value in self])
 
 
-def is_indatabase(table: str, value, key="name", strict=False) -> bool:
-    if strict:
-        cursor.execute(f"SELECT * FROM {table} WHERE {key} = '{value}'")
-    else:
-        cursor.execute(f"SELECT * FROM {table} WHERE {key} LIKE '%{value}%'")
-    result = bool(cursor.fetchone())
-    return result
-
-
-def is_keytable_indatabase() -> bool:
-    """Проверяет есть ли целевая таблица в базе данных."""
-    sql_keytable = get_sql_keytable(SQL_FILENAME)
-    cursor.execute(f"SELECT name FROM sqlite_master WHERE name='{sql_keytable}'")  \
-        # SELECT'ит таблицу с именем sql_kaytable
-    result = bool(cursor.fetchone())
-    return result
-
-
-
-def _student_to_tuple(student: Student) -> tuple[tuple, tuple]:
-    """Из экземпляра Student возвращает кортеж из двух списков -> tuple(fields, values)"""
-    fields = student.keys()
-    values = student.values()
-    return fields, values
-
-
 def add_student(student: Student, jentle=True) -> None:
     """Добавляет студента в базу данных."""
 
@@ -82,6 +56,32 @@ def add_student(student: Student, jentle=True) -> None:
         raise DatabaseError
 
     conn.commit()
+
+def is_indatabase(table: str, value, key="name", strict=False) -> bool:
+    if strict:
+        cursor.execute(f"SELECT * FROM {table} WHERE {key} = '{value}'")
+    else:
+        cursor.execute(f"SELECT * FROM {table} WHERE {key} LIKE '%{value}%'")
+    result = bool(cursor.fetchone())
+    return result
+
+
+def is_keytable_indatabase() -> bool:
+    """Проверяет есть ли целевая таблица в базе данных."""
+    sql_keytable = get_sql_keytable(SQL_FILENAME)
+    
+    result = is_indatabase('sqlite_master', sql_keytable)
+
+    return result
+
+
+
+def _student_to_tuple(student: Student) -> tuple[tuple, tuple]:
+    """Из экземпляра Student возвращает кортеж из двух списков -> tuple(fields, values)"""
+    fields = student.keys()
+    values = student.values()
+    return fields, values
+
 
 
 def change_student_value(student: Student, key, value): # value_type: ValueType
