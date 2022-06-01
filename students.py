@@ -1,0 +1,4 @@
+"""
+SELECT
+CREATE TABLE students
+"""
