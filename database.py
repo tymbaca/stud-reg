@@ -8,6 +8,7 @@ from exceptions import DatabaseError
 
 DATABASE_FILENAME = "database.db"
 SQL_FILENAME = "database.sql"
+KEYTABLE = "students"
 
 
 conn = sq.connect(DATABASE_FILENAME)
@@ -37,10 +38,21 @@ class Student:
     # _value = tuple([value for value in self])
 
 
+def start_database(sql_filename: str = SQL_FILENAME) -> None:
+    """Инициализирует базу данных по заданному SQL файлу, если она ранее не была инициализирована."""
+    global SQL_FILENAME
+    SQL_FILENAME = sql_filename
+    if not _is_keytable_indatabase():
+        _init_database(sql_filename)
+        print("*Вы инициализировали базу данных*")
+    else:
+        print("*База данных уже инициализирована*")
+
+
 def add_student(student: Student, jentle=True) -> None:
     """Добавляет студента в базу данных."""
 
-    if is_indatabase(get_sql_keytable(), student.name):
+    if is_indatabase(_get_sql_keytable(), student.name):
          print(f"Студент {student.name} уже в базе данных")
          return None
     
@@ -57,6 +69,19 @@ def add_student(student: Student, jentle=True) -> None:
 
     conn.commit()
 
+
+def change_student_value(student: Student, key, value): # value_type: ValueType
+    """Изменяет выбранное значение у студента."""
+    cursor.execute("")
+
+    conn.commit()
+
+
+def delete_student(student: Student):
+    """Удаляет студента из базы данных."""
+    conn.commit()
+
+
 def is_indatabase(table: str, value, key="name", strict=False) -> bool:
     if strict:
         cursor.execute(f"SELECT * FROM {table} WHERE {key} = '{value}'")
@@ -66,14 +91,13 @@ def is_indatabase(table: str, value, key="name", strict=False) -> bool:
     return result
 
 
-def is_keytable_indatabase() -> bool:
+def _is_keytable_indatabase() -> bool:
     """Проверяет есть ли целевая таблица в базе данных."""
-    sql_keytable = get_sql_keytable(SQL_FILENAME)
+    sql_keytable = _get_sql_keytable(SQL_FILENAME)
     
     result = is_indatabase('sqlite_master', sql_keytable)
 
     return result
-
 
 
 def _student_to_tuple(student: Student) -> tuple[tuple, tuple]:
@@ -83,16 +107,17 @@ def _student_to_tuple(student: Student) -> tuple[tuple, tuple]:
     return fields, values
 
 
-
-def change_student_value(student: Student, key, value): # value_type: ValueType
-    """Изменяет выбранное значение у студента."""
-
-    conn.commit()
-
-
-def delete_student(student: Student):
-    """Удаляет студента из базы данных."""
-    conn.commit()
+def _get_sql_keytable(sql_filename: str = SQL_FILENAME) -> str | None:
+    """Получает имя первой таблицы в целевом SQL файле."""
+    try:
+        with open(sql_filename, "r") as file:
+            first_line = file.readline()
+        sql_keytable = first_line.split()[2] 
+        return sql_keytable
+    except FileNotFoundError:
+        raise DatabaseError("Заданный SQL файл отсутствует в директории.")
+    except:
+        raise DatabaseError("Похоже, что-то не так с первой строкой SQL файла.\nВозвращаю None.")
 
 
 def _get_sql_script(sql_filename: str = SQL_FILENAME) -> str:
@@ -107,30 +132,6 @@ def _init_database(sql_filename: str = SQL_FILENAME) -> None:
         cursor.executescript(script)
     except:
         raise DatabaseError("Ошибка при инициализации базы данных.")
-
-
-def get_sql_keytable(sql_filename: str = SQL_FILENAME) -> str | None:
-    """Получает имя первой таблицы в целевом SQL файле."""
-    try:
-        with open(sql_filename, "r") as file:
-            first_line = file.readline()
-        sql_keytable = first_line.split()[2] 
-        return sql_keytable
-    except FileNotFoundError:
-        raise DatabaseError("Заданный SQL файл отсутствует в директории.")
-    except:
-        raise DatabaseError("Похоже, что-то не так с первой строкой SQL файла.\nВозвращаю None.")
-
-
-def start_database(sql_filename: str = SQL_FILENAME) -> None:
-    """Инициализирует базу данных по заданному SQL файлу, если она ранее не была инициализирована."""
-    global SQL_FILENAME
-    SQL_FILENAME = sql_filename
-    if not is_keytable_indatabase():
-        _init_database(sql_filename)
-        print("*Вы инициализировали базу данных*")
-    else:
-        print("*База данных уже инициализирована*")
 
 
 if __name__ == "__main__":
