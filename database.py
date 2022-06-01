@@ -38,6 +38,14 @@ class Student:
     
     # _value = tuple([value for value in self])
 
+tigran = Student(
+    id = -1,
+    name = "Тигран",
+    birthdate = "23.07.2002",
+    address = "Кошевого 24",
+    phone = "89062109545",
+    email = "tumb4ka228@gmail.com",
+)
 
 def start_database(sql_filename: str = SQL_FILENAME) -> None:
     """Инициализирует базу данных по заданному SQL файлу, если она ранее не была инициализирована."""
