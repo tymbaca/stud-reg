@@ -37,11 +37,10 @@ class Student:
         dataclass_values = dataclass_dict.values()
         return tuple(dataclass_values)
     
-    # _value = tuple([value for value in self])
 
 tigran = Student(
     id = -1,
-    name = "Тимур",
+    name = "Тигран",
     birthdate = "23.07.2002",
     address = "Кошевого 24",
     phone = "89062109545",
@@ -69,23 +68,11 @@ def get_all_students() -> list[Student]:
     return students
 
 
-def _row_to_student(student_row: sq.Row) -> Student:
-    student = Student(
-        id = student_row["id"],
-        name = student_row ["name"],
-        birthdate = student_row["birthdate"],
-        address = student_row["address"],
-        phone = student_row["phone"],
-        email = student_row["email"],
-    )
-    return student
-
-
 def add_student(student: Student, jentle=True, ghost=False) -> None:
     """Добавляет студента в базу данных."""
 
     if is_indatabase(KEYTABLE, student.name):
-         print(f"Студент {student.name} уже в базе данных")
+         print(f"[=] Студент {student.name} уже в базе данных")
          return None
     
     fields = student.keys()[:-1]    # deleting id field
@@ -100,12 +87,12 @@ def add_student(student: Student, jentle=True, ghost=False) -> None:
         conn.commit()
 
 
-def change_student(name: str, key: str, value, ghost=False) -> None:   # Потом name поменяю на Student
+def change_student(id: int, key: str, value, ghost=False) -> None:   # Потом name поменяю на Student
     """Изменяет выбранное значение у студента."""               # пока хз как будет происходить идентификация
     cursor.execute(f"""
         UPDATE {KEYTABLE}
         SET {key} = {value}
-        WHERE name = {name}
+        WHERE id = {id}
     """)
 
     if not ghost:
@@ -134,6 +121,19 @@ def _is_keytable_indatabase() -> bool:
     return result
 
 
+def _row_to_student(student_row: sq.Row) -> Student:
+    """Конвертирует sq.Row в Student"""
+    student = Student(
+        id = student_row["id"],
+        name = student_row ["name"],
+        birthdate = student_row["birthdate"],
+        address = student_row["address"],
+        phone = student_row["phone"],
+        email = student_row["email"],
+    )
+    return student
+
+
 def _get_sql_script(sql_filename: str = SQL_FILENAME) -> str:
     with open(sql_filename, "r") as sql_file:
         return sql_file.read()
@@ -151,8 +151,8 @@ def _init_database(sql_filename: str = SQL_FILENAME) -> None:
 def main():
     start_database()
     students = get_all_students()
-    pprint(get_all_students())
-    add_student(tigran, ghost=True)
+    # pprint(get_all_students())
+    add_student(tigran)
     pass
 
 if __name__ == "__main__":
