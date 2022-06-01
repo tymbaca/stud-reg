@@ -79,11 +79,9 @@ def add_student(student: Student, jentle=True) -> None:
          print(f"Студент {student.name} уже в базе данных")
          return None
     
-    fields = _student_to_tuple(student)[0]
-    values = _student_to_tuple(student)[1]
+    fields = student.keys()[:-1]    # deleting id field
+    values = student.values()[:-1]
     
-    fields = fields[:-1] # deleting id field
-    values = values[:-1]
     try:
         cursor.execute(f"INSERT INTO {KEYTABLE} {fields} VALUES {values};") 
         print(f'[+] Студент {student.name} внесен в базу данных.')
