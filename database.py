@@ -40,7 +40,7 @@ class Student:
 
 tigran = Student(
     id = -1,
-    name = "Тигран",
+    name = "Тимур",
     birthdate = "23.07.2002",
     address = "Кошевого 24",
     phone = "89062109545",
@@ -80,7 +80,7 @@ def _row_to_student(student_row: sq.Row) -> Student:
     return student
 
 
-def add_student(student: Student, jentle=True) -> None:
+def add_student(student: Student, jentle=True, ghost=False) -> None:
     """Добавляет студента в базу данных."""
 
     if is_indatabase(KEYTABLE, student.name):
@@ -95,11 +95,11 @@ def add_student(student: Student, jentle=True) -> None:
         print(f'[+] Студент {student.name} внесен в базу данных.')
     except:
         raise DatabaseError
+    if not ghost:
+        conn.commit()
 
-    conn.commit()
 
-
-def change_student_value(name: str, key: str, value) -> None:   # Потом name поменяю на Student
+def change_student(name: str, key: str, value, ghost=False) -> None:   # Потом name поменяю на Student
     """Изменяет выбранное значение у студента."""               # пока хз как будет происходить идентификация
     cursor.execute(f"""
         UPDATE {KEYTABLE}
@@ -107,15 +107,17 @@ def change_student_value(name: str, key: str, value) -> None:   # Потом nam
         WHERE name = {name}
     """)
 
-    conn.commit()
+    if not ghost:
+        conn.commit()
 
 
-def delete_student(student: Student):
+def delete_student(student: Student, ghost=False):
     """Удаляет студента из базы данных."""
-    conn.commit()
+    if not ghost:
+        conn.commit()
 
 
-def is_indatabase(table: str, value, key="name", strict=False) -> bool:
+def is_indatabase(table: str, value, key="name", strict=True) -> bool:
     """Checks does table contains value (defailt key is "name")"""
     if strict:
         cursor.execute(f"SELECT * FROM {table} WHERE {key} = '{value}'")
@@ -148,6 +150,7 @@ def _init_database(sql_filename: str = SQL_FILENAME) -> None:
 def main():
     start_database()
     get_all_students()
+    add_student(tigran, ghost=True)
     pass
 
 if __name__ == "__main__":
