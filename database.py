@@ -3,6 +3,7 @@ import sqlite3 as sq
 from dataclasses import dataclass
 
 from pprint import pprint
+from typing import Any
 from exceptions import DatabaseError
 
 DATABASE_FILENAME = "database.db"
@@ -65,7 +66,7 @@ def get_all_students() -> list[Student]:
         students.append(student)
     return students
 
-def get_student():
+def get_student(key, value) -> Student:
     pass
 
 def add_student(student: Student, jentle=True, ghost=False) -> None:
@@ -87,7 +88,7 @@ def add_student(student: Student, jentle=True, ghost=False) -> None:
         conn.commit()
 
 
-def change_student(student: Student, key: str, value, ghost=False) -> None:   # Потом name поменяю на Student
+def change_student(student: Student, key: str, value: Any, ghost=False) -> None:
     """Изменяет выбранное значение у студента."""               # пока хз как будет происходить идентификация
     cursor.execute(f"""
         UPDATE {KEYTABLE}
