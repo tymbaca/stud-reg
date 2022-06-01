@@ -3,6 +3,7 @@ from shutil import ExecError
 import sqlite3 as sq
 from dataclasses import dataclass
 from typing import Any, NamedTuple, Optional
+from unicodedata import name
 
 from exceptions import DatabaseError
 
@@ -18,12 +19,12 @@ cursor = conn.cursor()
 
 @dataclass
 class Student:
+    id: int
     name: str
     birthdate: str
     adress: str
     phone: str
     email: str
-    id: Optional[int] = None      # Убрать его из вызова create_student()
 
     def keys(self):
         dataclass_dict = dataclasses.asdict(self)
@@ -47,6 +48,17 @@ def start_database(sql_filename: str = SQL_FILENAME) -> None:
         print("*Вы инициализировали базу данных*")
     else:
         print("*База данных уже инициализирована*")
+
+
+def get_all_students() -> list[Student]:
+    cursor.execute(f"SELECT * FROM {KEYTABLE}")
+    raw_students = cursor.fetchall()
+    students = list()
+    for raw_student in raw_students:
+        student = Student(
+            name = raw_student[name]
+        )
+    pass
 
 
 def add_student(student: Student, jentle=True) -> None:
@@ -124,8 +136,8 @@ def _init_database(sql_filename: str = SQL_FILENAME) -> None:
 
 
 def main():
-    change_student_value()
 
+    get_all_students()
     pass
 
 if __name__ == "__main__":
