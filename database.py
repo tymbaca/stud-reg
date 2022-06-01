@@ -22,7 +22,7 @@ class Student:
     adress: str
     phone: str
     email: str
-    # id: Optional[int] = None      # Убрать его из вызова create_student()
+    id: Optional[int] = None      # Убрать его из вызова create_student()
 
     def keys(self):
         dataclass_dict = dataclasses.asdict(self)
@@ -56,10 +56,10 @@ def is_keytable_indatabase() -> bool:
 
 
 
-def _student_to_tuple(student: Student) -> tuple:
-    """Из экземпляра Student возвращает кортеж из двух строк -> tuple(fields, values)"""
-    fields = str(student.keys())
-    values = str(student.values())
+def _student_to_tuple(student: Student) -> tuple[tuple, tuple]:
+    """Из экземпляра Student возвращает кортеж из двух списков -> tuple(fields, values)"""
+    fields = student.keys()
+    values = student.values()
     return fields, values
 
 
@@ -67,14 +67,19 @@ def add_student(student: Student, jentle=True) -> None:
     """Добавляет студента в базу данных."""
 
     if not is_indatabase(get_sql_keytable(), student.name):
-        fields, values = _student_to_tuple(student)
-        try:
-            cursor.execute(f"INSERT INTO students {fields} VALUES {values};")
-            print(f'[+] Студент {student.name} внесен в базу данных.')
-        except sq.IntegrityError: # Нечитаемо
-            print("[|] Вероятно, этот студент уже состоит в базе данных.")
     else:
         print(f"[|] Студент {student.name} уже состоит в базе данных.")
+    fields = _student_to_tuple(student)[0]
+    values = _student_to_tuple(student)[1]
+    
+    fields = fields[:-1] # deleting id field
+    values = values[:-1]
+    try:
+        cursor.execute(f"INSERT INTO students {fields} VALUES {values};") 
+        print(f'[+] Студент {student.name} внесен в базу данных.')
+    except:
+        raise DatabaseError
+
     conn.commit()
 
 
