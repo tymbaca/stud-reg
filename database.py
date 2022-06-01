@@ -70,9 +70,13 @@ def add_student(student: Student, jentle=True) -> None:
     conn.commit()
 
 
-def change_student_value(student: Student, key, value): # value_type: ValueType
-    """Изменяет выбранное значение у студента."""
-    cursor.execute(f"UPDATE ")
+def change_student_value(name: str, key: str, value) -> None:   # Потом name поменяю на Student
+    """Изменяет выбранное значение у студента."""               # пока хз как будет происходить идентификация
+    cursor.execute(f"""
+        UPDATE {KEYTABLE}
+        SET {key} = {value}
+        WHERE name = {name}
+    """)
 
     conn.commit()
 
@@ -120,17 +124,9 @@ def _init_database(sql_filename: str = SQL_FILENAME) -> None:
 
 
 def main():
-    start_database(SQL_FILENAME)
-    # global jeytable init
-    arman = Student(
-        name='Акопян Арман Рубенович', 
-        birthdate='19.10.2000', 
-        adress='г. Зеленоградск ул. Ткаченко 1', 
-        phone='89003471088', 
-        email='metin-2014@mail.ru'
-        )
-    add_student(arman)
+    change_student_value()
 
+    pass
 
 if __name__ == "__main__":
     main()
