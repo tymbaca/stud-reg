@@ -1,9 +1,6 @@
 import dataclasses
-from shutil import ExecError
 import sqlite3 as sq
 from dataclasses import dataclass
-from typing import Any, NamedTuple, Optional
-from unicodedata import name
 
 from pprint import pprint
 from exceptions import DatabaseError
@@ -38,14 +35,15 @@ class Student:
         return tuple(dataclass_values)
     
 
-tigran = Student(
-    id = -1,
-    name = "Тигран",
-    birthdate = "23.07.2002",
-    address = "Кошевого 24",
-    phone = "89062109545",
-    email = "tumb4ka228@gmail.com",
-)
+# tigran = Student(
+#     id = -1,
+#     name = "Тигран",
+#     birthdate = "23.07.2002",
+#     address = "Кошевого 24",
+#     phone = "89062109545",
+#     email = "tumb4ka228@gmail.com",
+# )
+
 
 def start_database(sql_filename: str = SQL_FILENAME) -> None:
     """Инициализирует базу данных по заданному SQL файлу, если она ранее не была инициализирована."""
@@ -67,6 +65,8 @@ def get_all_students() -> list[Student]:
         students.append(student)
     return students
 
+def get_student():
+    pass
 
 def add_student(student: Student, jentle=True, ghost=False) -> None:
     """Добавляет студента в базу данных."""
@@ -91,10 +91,10 @@ def change_student(student: Student, key: str, value, ghost=False) -> None:   # 
     """Изменяет выбранное значение у студента."""               # пока хз как будет происходить идентификация
     cursor.execute(f"""
         UPDATE {KEYTABLE}
-        SET {key} = {value}
+        SET "{key}" = "{value}"
         WHERE id = {student.id}
     """)
-
+    print(f"[~] Значения студента {student.name} изменены.")
     if not ghost:
         conn.commit()
 
@@ -151,9 +151,13 @@ def _init_database(sql_filename: str = SQL_FILENAME) -> None:
 def main():
     start_database()
     students = get_all_students()
-    # pprint(get_all_students())
+
     # add_student(tigran)
-    change_student(tigran)
+    student = students[-1]
+
+    change_student(student, 'phone', 54362)
+    pprint(get_all_students())
+
     pass
 
 if __name__ == "__main__":
