@@ -87,12 +87,12 @@ def add_student(student: Student, jentle=True, ghost=False) -> None:
         conn.commit()
 
 
-def change_student(id: int, key: str, value, ghost=False) -> None:   # Потом name поменяю на Student
+def change_student(student: Student, key: str, value, ghost=False) -> None:   # Потом name поменяю на Student
     """Изменяет выбранное значение у студента."""               # пока хз как будет происходить идентификация
     cursor.execute(f"""
         UPDATE {KEYTABLE}
         SET {key} = {value}
-        WHERE id = {id}
+        WHERE id = {student.id}
     """)
 
     if not ghost:
@@ -152,7 +152,8 @@ def main():
     start_database()
     students = get_all_students()
     # pprint(get_all_students())
-    add_student(tigran)
+    # add_student(tigran)
+    change_student(tigran)
     pass
 
 if __name__ == "__main__":
