@@ -1,4 +1,0 @@
-"""
-SELECT
-CREATE TABLE students
-"""
