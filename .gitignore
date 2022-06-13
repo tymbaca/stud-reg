@@ -1,3 +1,5 @@
 __pycache__/**/*
+tmp/**/*
 .vscode
 database.db
+students.txt
